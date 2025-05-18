@@ -2,6 +2,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const extractButton = document.getElementById('extractButton');
     const articleContentDiv = document.getElementById('articleContent');
 
+
+    // ... your other code
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js') // Adjust path if needed
+            .then(registration => {
+                console.log('Service Worker registered with scope:', registration.scope);
+                // Optionally, clear any previous error message
+                const swErrorContainer = document.getElementById('sw-error-message');
+                if (swErrorContainer) {
+                    swErrorContainer.textContent = '';
+                }
+            })
+            .catch(error => {
+                console.error('Service Worker registration failed:', error);
+                // Display the error message in your HTML
+                const swErrorContainer = document.getElementById('sw-error-message');
+                if (swErrorContainer) {
+                    swErrorContainer.textContent = 'Service Worker registration failed: ' + error.message;
+                } else {
+                    // Fallback if the element doesn't exist yet
+                    console.warn('Could not display Service Worker error in HTML.');
+                }
+            });
+    } else {
+        console.log('Service Workers are not supported by this browser.');
+        const swErrorContainer = document.getElementById('sw-error-message');
+        if (swErrorContainer) {
+            swErrorContainer.textContent = 'Service Workers are not supported by this browser.';
+        }
+    }
+});
+    
     extractButton.addEventListener('click', async () => {
         try {
             const response = await fetch(window.location.href);
